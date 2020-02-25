@@ -1,0 +1,43 @@
+﻿<div class="jumbotron">
+    <h1>BrainWare Orders</h1>
+    <p class="lead">This is the BrainWare orders page! Welcome</p>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Your Orders</h2>
+        <div id="orders"></div>
+    </div>
+  
+</div>
+<script>
+    $(document).ready(function () {
+        var $orders = $('#orders');        
+        $.ajax({
+            'url': '/order',
+            'type': 'GET',
+            'contentType': 'application/json; charset=utf-8',
+            'success': function (data) {
+                var $orderList = $('<ul/>');
+                if (data) {
+                    $.each(data,
+                        function(i) {
+                            var $li = $('<li/>').text(this.Description + ' (Total: $' + this.OrderTotal + ')')
+                                .appendTo($orderList);
+
+                            var $productList = $('<ul/>');
+
+                            $.each(this.OrderProducts, function(j) {
+                                var $li2 = $('<li/>').text(this.Product.Name + ' ('+ this.Quantity +' @@ $' + this.Price + '/ea)')
+                                    .appendTo($productList);
+                            });
+
+                            $productList.appendTo($li);
+                        });
+
+                    $orders.append($orderList);
+                }
+            }
+        });
+    });
+</script>
+
